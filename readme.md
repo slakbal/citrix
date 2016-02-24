@@ -33,7 +33,7 @@ Now find the `aliases` array in the same config file and add the following Facad
 
 ## Config
 
-Before you can use the Citrix service provider you have configure it. You can create access your API keys here: [CITRIX Developer portal](https://developer.citrixonline.com/user/me/apps). Note that you need to have an active or trail account for the API to function properly. Just dev credentials alone will not work.
+Before you can use the Citrix service provider you have configure it. You can create access your API keys here: [CITRIX Developer portal](https://developer.citrixonline.com/user/me/apps). Note that you need to have an active or trial account for the API to function properly. Just dev credentials alone will not work.
 
 The provider currently uses Direct authentication. A Oauth2 authentication will be added later also.
 
