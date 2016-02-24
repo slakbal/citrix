@@ -1,0 +1,23 @@
+{
+    "name": "slakbal/citrix",
+    "description": "Laravel package for Citrix API wrapper for GoToWebinar",
+    "require": {
+        "guzzlehttp/guzzle": "^6.1",
+        "illuminate/support": "~5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Slakbal\\Citrix\\": "src/"
+        },
+        "files": [
+        ]
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Leslie Price",
+            "email": "leslie.price78@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
