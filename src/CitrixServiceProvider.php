@@ -12,7 +12,7 @@ class CitrixServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
 
     public function register()
@@ -20,28 +20,23 @@ class CitrixServiceProvider extends ServiceProvider
         //runtime merge config
         $this->mergeConfigFrom(__DIR__ . '/../config/citrix.php', 'citrix');
         $this->registerGotoWebinar(config('citrix.auth_type'));
-        $this->registerGotoMeeting(config('citrix.auth_type'));
-
+        //$this->registerGotoMeeting(config('citrix.auth_type'));
     }
 
 
-    public function registerGotoWebinar($authType)
+    public function registerGotoWebinar($authType = 'direct')
     {
-        $this->app->singleton('g2webinar', function ($app) use ($authType) {
+        $this->app->singleton(Webinar::class, function ($app) use ($authType) {
             return new Webinar($authType);
         });
-
-        $this->app->alias('g2webinar', Webinar::class);
     }
 
 
-    public function registerGotoMeeting($authType)
+    public function registerGotoMeeting($authType = 'direct')
     {
-        $this->app->singleton('g2meeting', function ($app) use ($authType) {
+        $this->app->singleton(Meeting::class, function ($app) use ($authType) {
             return new Meeting($authType);
         });
-
-        $this->app->alias('g2meeting', Meeting::class);
     }
 
 
@@ -61,8 +56,8 @@ class CitrixServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'g2webinar',
-            'g2meeting',
+            Webinar::class,
+            //Meeting::class,
         ];
     }
 }

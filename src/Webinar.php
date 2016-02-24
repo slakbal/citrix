@@ -9,9 +9,9 @@ use Slakbal\Citrix\Entity\Webinar as WebinarEntity;
 class Webinar extends CitrixAbstract implements WebinarInterface
 {
 
-    public function __construct($authType)
+    public function __construct($authType = 'direct')
     {
-        parent::__construct($authType);
+        parent::__construct($authType = 'direct');
     }
 
 
