@@ -31,6 +31,8 @@ class CitrixServiceProvider extends ServiceProvider
 		$this->app->singleton( 'g2webinar', function ( $app ) use ( $authType ) {
 			return new Webinar( $authType );
 		} );
+
+		$this->app->alias('g2webinar', Webinar::class);
 	}
 
 
@@ -39,6 +41,8 @@ class CitrixServiceProvider extends ServiceProvider
 		$this->app->singleton( 'g2meeting', function ( $app ) use ( $authType ) {
 			return new Meeting( $authType );
 		} );
+
+		$this->app->alias('g2meeting', Webinar::class);
 	}
 
 

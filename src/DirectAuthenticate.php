@@ -48,14 +48,15 @@ class DirectAuthenticate
 		            'password'   => $this->password,
 		            'client_id'  => $this->client_id ];
 
-		//		$this->response = $this->http_client->post( 'https://api.citrixonline.com//oauth/access_token', [ 'headers'     => [ 'Content-Type' => 'application/x-www-form-urlencoded',
-		//		                                                                                        'Accept'       => 'application/json', ],
-		//		                                                                     'form_params' => $params ] );
+		$this->response = $this->http_client->post( '/oauth/access_token', [ 'headers'     => [ 'Content-Type' => 'application/x-www-form-urlencoded',
+		                                                                                        'Accept'       => 'application/json', ],
+		                                                                     'form_params' => $params ] );
 
 		//Can also use a GET
-		$this->response   = $this->http_client->get( '/oauth/access_token', [ 'headers' => [ 'Content-Type' => 'application/json',
-		                                                                                     'Accept'       => 'application/json', ],
-		                                                                      'query'   => $params ] );
+		//$this->response   = $this->http_client->get( '/oauth/access_token', [ 'headers' => [ 'Content-Type' => 'application/json',
+		//                                                                                     'Accept'       => 'application/json', ],
+		//                                                                      'query'   => $params ] );
+
 		$this->statusCode = $this->response->getStatusCode();
 
 
@@ -63,7 +64,7 @@ class DirectAuthenticate
 
 		//dd( (string)$this->response );
 
-		$this->response = json_decode( $this->response, false, 512, JSON_BIGINT_AS_STRING);
+		$this->response = json_decode( $this->response, false, 512, JSON_BIGINT_AS_STRING );
 
 		return $this->response;
 	}
