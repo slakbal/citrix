@@ -1,7 +1,9 @@
 *WORK IN PROGRESS*
 
-#LARAVEL CITRIX GOTOWEBINAR API Wrapper package
+#LARAVEL CITRIX GOTOWEBINAR API PACKAGE
 ------------
+
+This package was inspired by teodortalov/citrix.
 
 This package currently make use of DIRECT AUTHENTICATION. OAuth2 authentication will be build in at a later stage.
 
