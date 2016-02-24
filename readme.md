@@ -33,11 +33,13 @@ Now find the `aliases` array in the same config file and add the following Facad
 
 ## Config
 
-Before you can use the Citrix service provider you have configure it. You can create access your API keys here: [CITRIX Developer portal](https://developer.citrixonline.com/user/me/apps). Note that you need to have an active or trial account for the API to function properly. Just dev credentials alone will not work.
+Before you can use the Citrix service provider you have configure it. You can create API access keys here: [CITRIX Developer portal](https://developer.citrixonline.com/user/me/apps).
 
-The provider currently uses Direct authentication. A Oauth2 authentication will be added later also.
+Note that you need to have an active or trial account for the API to function properly. Just dev credentials alone will not work.
 
-The following environment values are required in your .env file. The provider doesn't publish any config, etc. thus your project stays super clean.
+The provider currently only support `Direct` authentication. An OAuth2 authentication will be added later also.
+
+The following environment values are required in your `.env` file. The provider doesn't publish any config, etc. thus your project stays clean.
 
 ```
 CITRIX_DIRECT_USER=test@test.com
@@ -128,6 +130,6 @@ $attendee = GotoWebinar::getWebinarSessionAttendee( $webinarKey, $sessionKey, $r
 
 Your contribution or bug fixes are welcome!
 
-Next steps will be to add OAuth2 Authentication and adding the GotoMeeting provider into the package also.
+Next steps will be to build out more robuster error handling, add OAuth2 Authentication and adding the GotoMeeting provider into the package also.
 
 Enjoy!
