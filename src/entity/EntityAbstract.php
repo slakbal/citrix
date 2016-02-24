@@ -24,7 +24,7 @@ class EntityAbstract
             if (isset($toArray[ $value ])) {
                 unset($toArray[ $value ]);
             }
-            
+
         }
 
         return $toArray;

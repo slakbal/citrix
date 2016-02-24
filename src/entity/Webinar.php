@@ -23,7 +23,7 @@ class Webinar extends EntityAbstract
             (isset($parameterArray[ 'description' ]) ? $this->setDescription($parameterArray[ 'description' ]) : null);
             $this->setTimes(new Time($parameterArray[ 'startTime' ], $parameterArray[ 'endTime' ]));
             (isset($parameterArray[ 'timezone' ]) ? $this->setTimezone($parameterArray[ 'timezone' ]) : null);
-            
+
         }
     }
 
