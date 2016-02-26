@@ -63,7 +63,7 @@ $webinars = GotoWebinar::getAllWebinars();
 $webinars = GotoWebinar::getUpcomingWebinars();
 
 
-// Return list of historical Webinars
+// Return list of historical Webinars - date format standard: W3C - ISO 8601
 $dateRange = [  'fromTime' => "2016-01-01T01:00:00Z",
                 'toTime'   => "2016-03-23T20:00:00Z", ];
 
@@ -74,7 +74,7 @@ $webinars = GotoWebinar::getHistoricalWebinars( $dateRange );
 $webinar = GotoWebinar::getWebinar( $webinarKey );
 
 
-// Create a Webinar
+// Create a Webinar - date format standard: W3C - ISO 8601
 $webinar = [ 'subject'     => 'API Test 2',
              'description' => 'This Webinar is created via the API',
              'startTime'   => "2016-03-23T19:00:00Z",
