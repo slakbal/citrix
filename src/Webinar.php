@@ -23,7 +23,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         $this->setHttpMethod('POST')->setUrl($url)->setParams($webinarObject->toArray())->sendRequest();
 
-        return $this->getResponse();
+        return (object) $this->getResponse();
     }
 
 
@@ -96,7 +96,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
         //dd( $attendeeObject->toArray());
         $this->setHttpMethod('POST')->setUrl($url)->setParams($attendeeObject->toArray())->sendRequest();
 
-        return $this->getResponse();
+        return (object) $this->getResponse();
     }
 
 
