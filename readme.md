@@ -1,6 +1,6 @@
 # Citrix GotoWebinar API Provider for Laravel
 
-This package is a Citrix GotoWebinar API service provider and facade for Laravel 5.1+.
+This package is a Citrix GotoWebinar API service provider and facade for Laravel 5.1+. It was inspired by [Teodor Talov's Citrix API wrapper package](https://github.com/teodortalov/citrix).
 
 
 ## Installing
