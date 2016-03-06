@@ -240,8 +240,8 @@ abstract class CitrixAbstract
             }
         } catch (\Exception $e) {
 
-            $this->response = [
-                'error'   => true,
+            $this->response = (object) [
+                'error'   => (bool) true,
                 'message' => $e->getMessage(),
             ];
 
@@ -250,8 +250,8 @@ abstract class CitrixAbstract
         }
 
         //if no error carry on to build the response
-        $this->response = [
-            'error'  => false,
+        $this->response = (object) [
+            'error'  => (bool) false,
             'status' => $this->httpResponse->getStatusCode(),
             'body'   => $this->parseBody($this->httpResponse->getBody()),
         ];

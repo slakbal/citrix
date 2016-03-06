@@ -24,7 +24,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         $this->setHttpMethod('POST')->setUrl($url)->setParams($webinarObject->toArray())->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 
    //READ
@@ -34,7 +34,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 
     //UPDATE
@@ -48,7 +48,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
         //dd($webinarObject->toArray());
         $this->setHttpMethod('PUT')->setUrl($url)->setParams($webinarObject->toArray())->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 
     //DELETE
@@ -112,7 +112,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         $this->setHttpMethod('POST')->setUrl($url)->setParams($attendeeObject->toArray())->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 
 
@@ -142,7 +142,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         $this->setHttpMethod('DELETE')->setUrl($url)->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 
 
@@ -172,6 +172,6 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 }
