@@ -4,7 +4,6 @@ namespace Slakbal\Citrix;
 
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Provides common functionality for Citrix classes
@@ -241,10 +240,9 @@ abstract class CitrixAbstract
             }
         } catch (\Exception $e) {
 
-            Log::error('CITRIX - ' . $e->getMessage());
             $this->response = [
                 'error'   => true,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
 
             return $this;
@@ -253,9 +251,9 @@ abstract class CitrixAbstract
 
         //if no error carry on to build the response
         $this->response = [
-            'error'    => false,
-            'status'   => $this->httpResponse->getStatusCode(),
-            'body' => $this->parseBody($this->httpResponse->getBody())
+            'error'  => false,
+            'status' => $this->httpResponse->getStatusCode(),
+            'body'   => $this->parseBody($this->httpResponse->getBody()),
         ];
 
         return $this;
