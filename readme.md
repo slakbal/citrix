@@ -81,6 +81,19 @@ $webinar = [ 'subject'     => 'API Test 2',
              'endTime'     => "2016-03-23T20:00:00Z", ];
 
 $webinar = GotoWebinar::createWebinar( $webinar );
+
+
+// Update a Webinar - date format standard: W3C - ISO 8601
+$webinar = [ 'subject'     => 'API Test 2.2',
+             'description' => 'This Webinar is updated via the API',
+             'startTime'   => "2016-03-24T19:00:00Z",
+             'endTime'     => "2016-03-24T20:00:00Z", ];
+
+$webinar = GotoWebinar::updateWebinar( $webinarKey, $params, $sendNotification = true);
+
+
+// Delete a specific Webinar
+$result = GotoWebinar::deleteWebinar( $webinarKey, $sendNotification = true );
 ```
 
 ### Attendee and Registrant Resource

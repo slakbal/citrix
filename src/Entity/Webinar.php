@@ -10,6 +10,7 @@ class Webinar extends EntityAbstract
     public $description;
     public $times = [];
     public $timezone = 'Europe/Berlin';
+    public $local;
     private $webinarKey;
     private $registrationUrl;
     private $participants;
@@ -19,10 +20,11 @@ class Webinar extends EntityAbstract
     {
         if (isset($parameterArray) && is_array($parameterArray)) {
 
-            $this->setSubject($parameterArray[ 'subject' ]);
-            (isset($parameterArray[ 'description' ]) ? $this->setDescription($parameterArray[ 'description' ]) : null);
+            $this->setSubject((isset($parameterArray[ 'subject' ]) ? $parameterArray[ 'subject' ] : null));
+            $this->setDescription((isset($parameterArray[ 'description' ]) ? $parameterArray[ 'description' ] : ''));
             $this->setTimes(new Time($parameterArray[ 'startTime' ], $parameterArray[ 'endTime' ]));
-            (isset($parameterArray[ 'timezone' ]) ? $this->setTimezone($parameterArray[ 'timezone' ]) : null);
+            $this->setTimezone((isset($parameterArray[ 'timezone' ]) ? $parameterArray[ 'timezone' ] : $this->timezone));
+            $this->setLocal((isset($parameterArray[ 'local' ]) ? $parameterArray[ 'local' ] : 'de_DE'));
 
         }
     }
@@ -61,6 +63,18 @@ class Webinar extends EntityAbstract
     public function setTimezone($timezone)
     {
         $this->timezone = $timezone;
+    }
+
+
+    public function getLocal()
+    {
+        return $this->local;
+    }
+
+
+    public function setLocal($local)
+    {
+        $this->local = $local;
     }
 
 

@@ -3,9 +3,8 @@
 namespace Slakbal\Citrix;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Provides common functionality for Citrix classes
@@ -34,6 +33,8 @@ abstract class CitrixAbstract
     private $params = [];
 
     private $url;
+
+    private $httpResponse;
 
     private $response;
 
@@ -70,12 +71,28 @@ abstract class CitrixAbstract
     }
 
 
+    public function hasAccessObject()
+    {
+        if (Cache::has('citrix_access_object')) {
+            return true;
+        }
+
+        return false;
+    }
+
+
     private function directAuthentication()
     {
         $directAuth = new DirectAuthenticate();
 
         $this->authObject = $directAuth->authenticate();
         $this->rememberAccessObject($this->authObject);
+    }
+
+
+    public function rememberAccessObject($authObject)
+    {
+        Cache::put('citrix_access_object', $authObject, $this->tokenExpiryMinutes);
     }
 
 
@@ -87,31 +104,9 @@ abstract class CitrixAbstract
     }
 
 
-    public function rememberAccessObject($authObject)
-    {
-        Cache::put('citrix_access_object', $authObject, $this->tokenExpiryMinutes);
-    }
-
-
-    public function hasAccessObject()
-    {
-        if (Cache::has('citrix_access_object')) {
-            return true;
-        }
-
-        return false;
-    }
-
-
     public function getOrganizerKey()
     {
         return $this->authObject->organizer_key;
-    }
-
-
-    public function getAccessToken()
-    {
-        return $this->authObject->access_token;
     }
 
 
@@ -133,23 +128,9 @@ abstract class CitrixAbstract
     }
 
 
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-
     public function getStatus()
     {
         return $this->status;
-    }
-
-
-    public function setParams($params)
-    {
-        $this->params = $params;
-
-        return $this;
     }
 
 
@@ -161,29 +142,9 @@ abstract class CitrixAbstract
     }
 
 
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-
-    public function setUrl($url)
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-
     public function getResponse()
     {
         return $this->response;
-    }
-
-
-    public function getResponseCollection()
-    {
-        return collect($this->response);
     }
 
 
@@ -203,17 +164,9 @@ abstract class CitrixAbstract
     }
 
 
-    public function getHttpMethod()
+    public function getResponseCollection()
     {
-        return $this->httpMethod;
-    }
-
-
-    public function setHttpMethod($httpMethod)
-    {
-        $this->httpMethod = strtoupper($httpMethod);
-
-        return $this;
+        return collect($this->response);
     }
 
 
@@ -237,7 +190,7 @@ abstract class CitrixAbstract
 
                 case 'GET':
 
-                    $response = $this->http_client->get($this->getUrl(), [
+                    $this->httpResponse = $this->http_client->get($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
@@ -249,7 +202,19 @@ abstract class CitrixAbstract
 
                 case 'POST':
 
-                    $response = $this->http_client->post($this->getUrl(), [
+                    $this->httpResponse = $this->http_client->post($this->getUrl(), [
+                        'headers' => [
+                            'Content-Type'  => 'application/json; charset=utf-8',
+                            'Accept'        => 'application/json',
+                            'Authorization' => 'OAuth oauth_token=' . $this->getAccessToken(),
+                        ],
+                        'json'    => $this->getParams(),
+                    ]);
+                    break;
+
+                case 'PUT':
+
+                    $this->httpResponse = $this->http_client->put($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
@@ -261,13 +226,12 @@ abstract class CitrixAbstract
 
                 case 'DELETE':
 
-                    $response = $this->http_client->delete($this->getUrl(), [
+                    $this->httpResponse = $this->http_client->delete($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
                             'Authorization' => 'OAuth oauth_token=' . $this->getAccessToken(),
                         ],
-                        'json'    => $this->getParams(),
                     ]);
                     break;
 
@@ -275,34 +239,80 @@ abstract class CitrixAbstract
 
                     break;
             }
-
-        } catch (ClientException $e) {
-
-            $this->response = [];
-
-            return $this;
-
-        } catch (RequestException $e) {
-
-            $this->response = [];
-
-            return $this;
-
         } catch (\Exception $e) {
 
-            $this->response = [];
+            Log::error('CITRIX - ' . $e->getMessage());
+            $this->response = [
+                'error'   => true,
+                'message' => $e->getMessage()
+            ];
 
             return $this;
+
         }
 
-        //if no error carry on to process the response
-
-        $this->response = $response->getBody();
-        //dd( (string)$this->response );
-
-        $this->response = json_decode($this->response, false, 512, JSON_BIGINT_AS_STRING);
+        //if no error carry on to build the response
+        $this->response = [
+            'error'    => false,
+            'status'   => $this->httpResponse->getStatusCode(),
+            'body' => $this->parseBody($this->httpResponse->getBody())
+        ];
 
         return $this;
+    }
+
+
+    public function getHttpMethod()
+    {
+        return $this->httpMethod;
+    }
+
+
+    public function setHttpMethod($httpMethod)
+    {
+        $this->httpMethod = strtoupper($httpMethod);
+
+        return $this;
+    }
+
+
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+
+    public function getAccessToken()
+    {
+        return $this->authObject->access_token;
+    }
+
+
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+
+    public function setParams($params)
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
+
+    public function parseBody($body)
+    {
+        return json_decode($body, false, 512, JSON_BIGINT_AS_STRING);
     }
 
 }

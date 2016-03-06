@@ -15,6 +15,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
     }
 
 
+    //CREATE
     public function createWebinar($params)
     {
         $url = 'organizers/' . $this->getOrganizerKey() . '/webinars';
@@ -26,7 +27,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
         return (object) $this->getResponse();
     }
 
-
+   //READ
     public function getWebinar($webinarKey)
     {
         $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
@@ -36,15 +37,30 @@ class Webinar extends CitrixAbstract implements WebinarInterface
         return (object) $this->getResponse();
     }
 
-
-    public function deleteWebinar($webinarKey)
+    //UPDATE
+    public function updateWebinar($webinarKey, $params, $sendNotification = true)
     {
+        $notificationString = ($sendNotification) ? 'true' : 'false';
 
-        $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
+        $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '?notifyParticipants=' . $notificationString;
+
+        $webinarObject = new WebinarEntity($params);
+        //dd($webinarObject->toArray());
+        $this->setHttpMethod('PUT')->setUrl($url)->setParams($webinarObject->toArray())->sendRequest();
+
+        return (object) $this->getResponse();
+    }
+
+    //DELETE
+    public function deleteWebinar($webinarKey, $sendNotification = true)
+    {
+        $notificationString = ($sendNotification) ? 'true' : 'false';
+
+        $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '?sendCancellationEmails=' . $notificationString;
 
         $this->setHttpMethod('DELETE')->setUrl($url)->sendRequest();
 
-        return (object) $this->getResponse();
+        return $this->getResponse();
     }
 
 
