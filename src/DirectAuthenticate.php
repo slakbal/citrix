@@ -52,13 +52,16 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
-        $this->response = $this->http_client->get('/oauth/access_token', [
-            'headers'     => [
-                'Content-Type' => 'application/json',
-                'Accept'       => 'application/json',
-            ],
-            'query' => $params,
-        ]);
+//        $this->response = $this->http_client->get('/oauth/access_token', [
+//            'headers'     => [
+//                'Content-Type' => 'application/json',
+//                'Accept'       => 'application/json',
+//            ],[
+//            'query' => $params],
+//
+//        ]);
+
+        $this->response = $this->http_client->request('GET', '/oauth/access_token', ['query' => $params]);
 
         //Can also use a GET
         //$this->response   = $this->http_client->get( '/oauth/access_token', [ 'headers' => [ 'Content-Type' => 'application/json',
