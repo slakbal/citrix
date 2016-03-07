@@ -7,7 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 class DirectAuthenticate
 {
 
-    protected $base_uri = 'https://api.citrixonline.com/G2W/rest';
+    protected $base_uri = 'https://api.citrixonline.com';//'https://api.citrixonline.com/G2W/rest';//'https://api.citrixonline.com/oauth/access_token';//
 
     protected $timeout = 5.0;
 
@@ -52,12 +52,12 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
-        $this->response = $this->http_client->post('/oauth/access_token', [
+        $this->response = $this->http_client->get('/oauth/access_token', [
             'headers'     => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Content-Type' => 'application/json',
                 'Accept'       => 'application/json',
             ],
-            'form_params' => $params,
+            'query' => $params,
         ]);
 
         //Can also use a GET
