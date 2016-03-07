@@ -57,7 +57,8 @@ class DirectAuthenticate
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
             ],
-            'query' => $params
+            'query' => $params,
+            'form_params' => $params,
         ]);
 
         //            'headers'     => [
