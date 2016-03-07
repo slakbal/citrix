@@ -52,13 +52,21 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
-        $this->response = $this->http_client->post('/oauth/access_token', [
-            'headers'     => [
+        $this->response = $this->http_client->get('/oauth/access_token', [
+            'header' => [
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
-            ],[
-            'query' => $params],
+            ],
+            'query' => $params
         ]);
+
+        //            'headers'     => [
+        //                'Content-Type' => 'application/x-www-form-urlencoded',
+        //                'Accept'       => 'application/json',
+        //            ],[
+
+        //        $request = new Request('POST', 'http://httpbin.org/?foo=bar');
+        //        echo $request->getUri()->getQuery(); // foo=bar
 
         //$this->response = $this->http_client->request('GET', '/oauth/access_token', ['query' => $params]);
 
@@ -66,6 +74,8 @@ class DirectAuthenticate
         //$this->response   = $this->http_client->get( '/oauth/access_token', [ 'headers' => [ 'Content-Type' => 'application/json',
         //                                                                                     'Accept'       => 'application/json', ],
         //                                                                      'query'   => $params ] );
+
+        //dd($this->response->getBody()->getContents());
 
         $this->statusCode = $this->response->getStatusCode();
 
