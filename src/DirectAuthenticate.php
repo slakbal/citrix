@@ -50,24 +50,24 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
-        $url = '/oauth/access_token?grant_type='.$this->grant_type.'&user_id='.$this->username.'&password='.$this->password.'&client_id='.$this->client_id;
-
-        $this->response = $this->client->get($url, [
-            'header'      => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-                'Accept'       => 'application/json',
-            ]
-        ]);
-
-
-//        $this->response = $this->client->get('/oauth/access_token', [
+//        $url = '/oauth/access_token?grant_type='.$this->grant_type.'&user_id='.$this->username.'&password='.$this->password.'&client_id='.$this->client_id;
+//
+//        $this->response = $this->client->get($url, [
 //            'header'      => [
 //                'Content-Type' => 'application/x-www-form-urlencoded',
 //                'Accept'       => 'application/json',
-//            ],
-//            'query'       => $params,
-//            //'form_params' => $params,
+//            ]
 //        ]);
+
+
+        $this->response = $this->client->get('/oauth/access_token', [
+            'header'      => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Accept'       => 'application/json',
+            ],
+            'query'       => $params,
+            'form_params' => $params,
+        ]);
 
         //            'headers'     => [
         //                'Content-Type' => 'application/x-www-form-urlencoded',
