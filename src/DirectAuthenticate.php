@@ -3,6 +3,7 @@
 namespace Slakbal\Citrix;
 
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\ClientInterface;
 
 class DirectAuthenticate
 {
@@ -21,7 +22,7 @@ class DirectAuthenticate
 
     protected $client_id;
 
-    protected $http_client;
+    protected $client;
 
     protected $response;
 
@@ -33,13 +34,11 @@ class DirectAuthenticate
         $this->username  = config('citrix.direct.username');
         $this->password  = config('citrix.direct.password');
         $this->client_id = config('citrix.direct.client_id');
-
-        $this->http_client = new HttpClient([
+        $this->client    = new HttpClient([
             'base_uri' => $this->base_uri,
             'timeout'  => $this->timeout,
             'verify'   => $this->verify_ssl,
         ]);
-
     }
 
 
@@ -52,6 +51,15 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
+        if (version_compare(ClientInterface::VERSION, '6') === 1) {
+            $options = ['form_params' => $params];
+        } else {
+            $options = ['body' => $params];
+        }
+
+        $this->response = $this->client->post('/oauth/access_token', $options);
+
+        /*
         $this->response = $this->http_client->get('/oauth/access_token', [
             'header' => [
                 'Content-Type' => 'application/x-www-form-urlencoded',
@@ -60,7 +68,7 @@ class DirectAuthenticate
             'query' => $params,
             'form_params' => $params,
         ]);
-
+*/
         //            'headers'     => [
         //                'Content-Type' => 'application/x-www-form-urlencoded',
         //                'Accept'       => 'application/json',
@@ -79,7 +87,6 @@ class DirectAuthenticate
         //dd($this->response->getBody()->getContents());
 
         $this->statusCode = $this->response->getStatusCode();
-
 
         $this->response = $this->response->getBody();
 
