@@ -2,8 +2,8 @@
 
 namespace Slakbal\Citrix\Facade;
 
-use Slakbal\Citrix\Meeting;
 use Illuminate\Support\Facades\Facade;
+use Slakbal\Citrix\Meeting;
 
 class GotoMeeting extends Facade
 {

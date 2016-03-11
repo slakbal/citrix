@@ -27,7 +27,8 @@ class Webinar extends CitrixAbstract implements WebinarInterface
         return $this->getResponse();
     }
 
-   //READ
+
+    //READ
     public function getWebinar($webinarKey)
     {
         $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
@@ -36,6 +37,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         return $this->getResponse();
     }
+
 
     //UPDATE
     public function updateWebinar($webinarKey, $params, $sendNotification = true)
@@ -50,6 +52,7 @@ class Webinar extends CitrixAbstract implements WebinarInterface
 
         return $this->getResponse();
     }
+
 
     //DELETE
     public function deleteWebinar($webinarKey, $sendNotification = true)

@@ -50,16 +50,6 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
-//        $url = '/oauth/access_token?grant_type='.$this->grant_type.'&user_id='.$this->username.'&password='.$this->password.'&client_id='.$this->client_id;
-//
-//        $this->response = $this->client->get($url, [
-//            'header'      => [
-//                'Content-Type' => 'application/x-www-form-urlencoded',
-//                'Accept'       => 'application/json',
-//            ]
-//        ]);
-
-
         $this->response = $this->client->get('/oauth/access_token', [
             'header'      => [
                 'Content-Type' => 'application/x-www-form-urlencoded',
@@ -69,22 +59,6 @@ class DirectAuthenticate
             'form_params' => $params,
         ]);
 
-        //            'headers'     => [
-        //                'Content-Type' => 'application/x-www-form-urlencoded',
-        //                'Accept'       => 'application/json',
-        //            ],[
-
-        //        $request = new Request('POST', 'http://httpbin.org/?foo=bar');
-        //        echo $request->getUri()->getQuery(); // foo=bar
-
-        //$this->response = $this->http_client->request('GET', '/oauth/access_token', ['query' => $params]);
-
-        //Can also use a GET
-        //$this->response   = $this->http_client->get( '/oauth/access_token', [ 'headers' => [ 'Content-Type' => 'application/json',
-        //                                                                                     'Accept'       => 'application/json', ],
-        //                                                                      'query'   => $params ] );
-
-        //dd($this->response->getBody()->getContents());
 
         $this->statusCode = $this->response->getStatusCode();
 
