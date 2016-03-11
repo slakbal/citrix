@@ -146,3 +146,5 @@ Your contribution or bug fixes are welcome!
 Next steps will be to build out more robuster error handling, add OAuth2 Authentication and adding the GotoMeeting provider into the package also.
 
 Enjoy!
+
+Slakkie
