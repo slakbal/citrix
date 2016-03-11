@@ -3,7 +3,6 @@
 namespace Slakbal\Citrix;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\ClientInterface;
 
 class DirectAuthenticate
 {
@@ -51,24 +50,25 @@ class DirectAuthenticate
             'client_id'  => $this->client_id,
         ];
 
-        if (version_compare(ClientInterface::VERSION, '6') === 1) {
-            $options = ['form_params' => $params];
-        } else {
-            $options = ['body' => $params];
-        }
+        $url = '/oauth/access_token?grant_type='.$this->grant_type.'&user_id='.$this->username.'&password='.$this->password.'&client_id='.$this->client_id;
 
-        $this->response = $this->client->post('/oauth/access_token', $options);
-
-        /*
-        $this->response = $this->http_client->get('/oauth/access_token', [
-            'header' => [
+        $this->response = $this->client->get($url, [
+            'header'      => [
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept'       => 'application/json',
-            ],
-            'query' => $params,
-            'form_params' => $params,
+            ]
         ]);
-*/
+
+
+//        $this->response = $this->client->get('/oauth/access_token', [
+//            'header'      => [
+//                'Content-Type' => 'application/x-www-form-urlencoded',
+//                'Accept'       => 'application/json',
+//            ],
+//            'query'       => $params,
+//            //'form_params' => $params,
+//        ]);
+
         //            'headers'     => [
         //                'Content-Type' => 'application/x-www-form-urlencoded',
         //                'Accept'       => 'application/json',
@@ -89,8 +89,6 @@ class DirectAuthenticate
         $this->statusCode = $this->response->getStatusCode();
 
         $this->response = $this->response->getBody();
-
-        //dd( (string)$this->response );
 
         $this->response = json_decode($this->response, false, 512, JSON_BIGINT_AS_STRING);
 

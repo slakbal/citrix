@@ -21,7 +21,7 @@ abstract class CitrixAbstract
 
     private $verify_ssl = false;
 
-    private $http_client;
+    private $client;
 
     private $authObject; //holds all the values after auth
 
@@ -172,9 +172,9 @@ abstract class CitrixAbstract
     public function sendRequest()
     {
 
-        if (!$this->http_client instanceof HttpClient) {
+        if (!$this->client instanceof HttpClient) {
 
-            $this->http_client = new HttpClient([
+            $this->client = new HttpClient([
                 'base_uri' => $this->base_uri,
                 'port'     => $this->port,
                 'timeout'  => $this->timeout,
@@ -189,7 +189,7 @@ abstract class CitrixAbstract
 
                 case 'GET':
 
-                    $this->httpResponse = $this->http_client->get($this->getUrl(), [
+                    $this->httpResponse = $this->client->get($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
@@ -201,7 +201,7 @@ abstract class CitrixAbstract
 
                 case 'POST':
 
-                    $this->httpResponse = $this->http_client->post($this->getUrl(), [
+                    $this->httpResponse = $this->client->post($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
@@ -213,7 +213,7 @@ abstract class CitrixAbstract
 
                 case 'PUT':
 
-                    $this->httpResponse = $this->http_client->put($this->getUrl(), [
+                    $this->httpResponse = $this->client->put($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
@@ -225,7 +225,7 @@ abstract class CitrixAbstract
 
                 case 'DELETE':
 
-                    $this->httpResponse = $this->http_client->delete($this->getUrl(), [
+                    $this->httpResponse = $this->client->delete($this->getUrl(), [
                         'headers' => [
                             'Content-Type'  => 'application/json; charset=utf-8',
                             'Accept'        => 'application/json',
