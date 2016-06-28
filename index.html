@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Citrix by slakbal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Citrix</h1>
+      <h2 class="project-tagline">A Laravel specific package for interacting with the Citrix API for GoToWebinar</h2>
+      <a href="https://github.com/slakbal/citrix" class="btn">View on GitHub</a>
+      <a href="https://github.com/slakbal/citrix/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/slakbal/citrix/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="citrix-gotowebinar-api-provider-for-laravel" class="anchor" href="#citrix-gotowebinar-api-provider-for-laravel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Citrix GotoWebinar API Provider for Laravel</h1>
+
+<p>This package is a Citrix GotoWebinar API service provider and facade for Laravel 5.1+. It was inspired by <a href="https://github.com/teodortalov/citrix">Teodor Talov's Citrix API wrapper package</a>.</p>
+
+<h2>
+<a id="installing" class="anchor" href="#installing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing</h2>
+
+<p>You can use Composer to install the library</p>
+
+<pre><code>composer require slakbal/citrix
+</code></pre>
+
+<p>Find the <code>providers</code> array in the <code>config/app.php</code> file and add the following Service Provider:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-s"><span class="pl-pds">'</span>providers<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [</span>
+<span class="pl-s1">  <span class="pl-c">// ...</span></span>
+<span class="pl-s1">  <span class="pl-c1">Slakbal\Citrix\</span><span class="pl-c1">CitrixServiceProvider</span><span class="pl-k">::</span><span class="pl-c1">class</span></span>
+<span class="pl-s1">];</span></pre></div>
+
+<p>Now find the <code>aliases</code> array in the same config file and add the following Facade class:</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-s"><span class="pl-pds">'</span>aliases<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [</span>
+<span class="pl-s1">  <span class="pl-c">// ...</span></span>
+<span class="pl-s1">  <span class="pl-s"><span class="pl-pds">'</span>GotoWebinar<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Slakbal\Citrix\Facade\</span><span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span><span class="pl-c1">class</span></span>
+<span class="pl-s1">];</span></pre></div>
+
+<h2>
+<a id="config" class="anchor" href="#config" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Config</h2>
+
+<p>Before you can use the Citrix service provider you have configure it. You can create API access keys here: <a href="https://developer.citrixonline.com/user/me/apps">CITRIX Developer portal</a>.</p>
+
+<p>Note that you need to have an active or trial account for the API to function properly. Just dev credentials alone will not work.</p>
+
+<p>The provider currently only support <code>Direct</code> authentication. An OAuth2 authentication will be added later also.</p>
+
+<p>The following environment values are required in your <code>.env</code> file. The provider doesn't publish any config, etc. thus your project stays clean.</p>
+
+<pre><code>CITRIX_DIRECT_USER=test@test.com
+CITRIX_DIRECT_PASSWORD=testpassword
+CITRIX_CONSUMER_KEY=123123123123
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="webinar-resource" class="anchor" href="#webinar-resource" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Webinar Resource</h3>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return list of all the Webinars</span></span>
+<span class="pl-s1"><span class="pl-smi">$webinars</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getAllWebinars();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return the list of all upcoming Webinars</span></span>
+<span class="pl-s1"><span class="pl-smi">$webinars</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getUpcomingWebinars();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return list of historical Webinars - date format standard: W3C - ISO 8601</span></span>
+<span class="pl-s1"><span class="pl-smi">$dateRange</span> <span class="pl-k">=</span> [  <span class="pl-s"><span class="pl-pds">'</span>fromTime<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>2016-01-01T01:00:00Z<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>toTime<span class="pl-pds">'</span></span>   <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>2016-03-23T20:00:00Z<span class="pl-pds">"</span></span>, ];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$webinars</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getHistoricalWebinars( <span class="pl-smi">$dateRange</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$webinar</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getWebinar( <span class="pl-smi">$webinarKey</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Create a Webinar - date format standard: W3C - ISO 8601</span></span>
+<span class="pl-s1"><span class="pl-smi">$webinar</span> <span class="pl-k">=</span> [ <span class="pl-s"><span class="pl-pds">'</span>subject<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>API Test 2<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">             <span class="pl-s"><span class="pl-pds">'</span>description<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>This Webinar is created via the API<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">             <span class="pl-s"><span class="pl-pds">'</span>startTime<span class="pl-pds">'</span></span>   <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>2016-03-23T19:00:00Z<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">             <span class="pl-s"><span class="pl-pds">'</span>endTime<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>2016-03-23T20:00:00Z<span class="pl-pds">"</span></span>, ];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$webinar</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>createWebinar( <span class="pl-smi">$webinar</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Update a Webinar - date format standard: W3C - ISO 8601</span></span>
+<span class="pl-s1"><span class="pl-smi">$webinar</span> <span class="pl-k">=</span> [ <span class="pl-s"><span class="pl-pds">'</span>subject<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>API Test 2.2<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">             <span class="pl-s"><span class="pl-pds">'</span>description<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>This Webinar is updated via the API<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">             <span class="pl-s"><span class="pl-pds">'</span>startTime<span class="pl-pds">'</span></span>   <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>2016-03-24T19:00:00Z<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">             <span class="pl-s"><span class="pl-pds">'</span>endTime<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>2016-03-24T20:00:00Z<span class="pl-pds">"</span></span>, ];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$webinar</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>updateWebinar( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$params</span>, <span class="pl-smi">$sendNotification</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Delete a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$result</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>deleteWebinar( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$sendNotification</span> <span class="pl-k">=</span> <span class="pl-c1">true</span> );</span></pre></div>
+
+<h3>
+<a id="attendee-and-registrant-resource" class="anchor" href="#attendee-and-registrant-resource" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Attendee and Registrant Resource</h3>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// Return a list of attendees for a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$attendees</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getWebinarAttendees( <span class="pl-smi">$webinarKey</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Register an attendee for a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$webinarKey</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>7102152795910768396<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$registrant</span> <span class="pl-k">=</span> [ <span class="pl-s"><span class="pl-pds">'</span>firstname<span class="pl-pds">'</span></span>    <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>Peter<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>lastname<span class="pl-pds">'</span></span>     <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>Pan<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>email<span class="pl-pds">'</span></span>        <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>peter.pan@gmail.com<span class="pl-pds">'</span></span>,</span>
+<span class="pl-s1">                <span class="pl-s"><span class="pl-pds">'</span>organization<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>Neverland<span class="pl-pds">'</span></span>, ];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$result</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>registerAttendee( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$registrant</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return a list of registrants for a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$registrants</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getWebinarRegistrants( <span class="pl-smi">$webinarKey</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return a specific registrant from a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$registrant</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getWebinarRegistrant( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$registrantKey</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Remove a specific registrant from a specific Webinar</span></span>
+<span class="pl-s1"><span class="pl-smi">$result</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>deleteWebinarRegistrant( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$registrantKey</span> );</span></pre></div>
+
+<h3>
+<a id="session-resource" class="anchor" href="#session-resource" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Session Resource</h3>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// Return list of sessions for the Organizer ()</span></span>
+<span class="pl-s1"><span class="pl-smi">$sessions</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getOrganizerSessions();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return list of attendees for a specific Webinar and specific session</span></span>
+<span class="pl-s1"><span class="pl-smi">$attendees</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getWebinarSessionAttendees( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$sessionKey</span> );</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Return a specific attendee for a specific Webinar and specific session</span></span>
+<span class="pl-s1"><span class="pl-smi">$attendee</span> <span class="pl-k">=</span> <span class="pl-c1">GotoWebinar</span><span class="pl-k">::</span>getWebinarSessionAttendee( <span class="pl-smi">$webinarKey</span>, <span class="pl-smi">$sessionKey</span>, <span class="pl-smi">$registrantKey</span> );</span></pre></div>
+
+<p>Your contribution or bug fixes are welcome!</p>
+
+<p>Next steps will be to build out more robuster error handling, add OAuth2 Authentication and adding the GotoMeeting provider into the package also.</p>
+
+<p>Enjoy!</p>
+
+<p>Slakkie</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/slakbal/citrix">Citrix</a> is maintained by <a href="https://github.com/slakbal">slakbal</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
