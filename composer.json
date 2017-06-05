@@ -2,7 +2,8 @@
   "name": "slakbal/citrix",
   "description": "Laravel package for Citrix API wrapper for GoToWebinar",
   "require": {
-    "guzzlehttp/guzzle": "^6.1",
+    "php": ">=7.1.*",
+    "nategood/httpful": "*",
     "illuminate/support": "~5"
   },
   "autoload": {
