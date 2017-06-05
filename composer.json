@@ -1,24 +1,40 @@
 {
   "name": "slakbal/citrix",
-  "description": "Laravel package for Citrix API wrapper for GoToWebinar",
+  "description": "Laravel package for Citrix/LogMeIn API wrapper for GoToWebinar",
+  "keywords": [
+    "citrix",
+    "gotowebinar",
+    "logmein",
+    "laravel-gotowebinar",
+    "slakbal"
+  ],
+  "authors": [
+    {
+      "name": "Leslie Price",
+      "email": "leslie.price78@gmail.com",
+      "role": "Developer"
+    }
+  ],
   "require": {
-    "php": ">=7.1.*",
+    "php": "^7.0",
     "nategood/httpful": "*",
+    "guzzlehttp/guzzle": "^6.1",
     "illuminate/support": "~5"
+  },
+  "require-dev": {
+    "orchestra/testbench": "*",
+    "phpunit/phpunit": "~5.7"
   },
   "autoload": {
     "psr-4": {
       "Slakbal\\Citrix\\": "src/"
-    },
-    "files": [
-    ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Slakbal\\Citrix\\Test\\": "tests"
+    }
   },
   "license": "MIT",
-  "authors": [
-    {
-      "name": "Leslie Price",
-      "email": "leslie.price78@gmail.com"
-    }
-  ],
   "minimum-stability": "dev"
 }
