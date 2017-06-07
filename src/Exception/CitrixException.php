@@ -3,7 +3,7 @@
 namespace Slakbal\Citrix\Exception;
 
 
-class CitrixException extends \Exception implements ExceptionInterface
+class CitrixException extends \Exception
 {
 
 }
