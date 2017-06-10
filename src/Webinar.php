@@ -9,13 +9,30 @@ use Slakbal\Citrix\Entity\Webinar as WebinarEntity;
 class Webinar extends CitrixAbstract
 {
 
-    public function __construct($authType = 'direct')
+    function __construct($authType = 'direct')
     {
         parent::__construct($authType = 'direct');
     }
 
 
-    public function getUpcomingWebinars()
+    /*
+     * Retrieves the list of webinars for an account within a given date range.
+     * Page and size parameters are optional.
+     * Default page is 0 and default size is 20.
+     */
+    function getAllWebinars($parameters = null)
+    {
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars';
+
+        return $this->sendRequest('GET', $path, $parameters, $payload = null);
+    }
+
+
+    /*
+     * Returns webinars scheduled for the future for the configured organizer and webinars
+     * of other organizers where the configured organizer is a co-organizer.
+     */
+    function getUpcomingWebinars()
     {
         $path = 'organizers/' . $this->getOrganizerKey() . '/upcomingWebinars';
 
@@ -23,21 +40,62 @@ class Webinar extends CitrixAbstract
     }
 
 
-    public function getAllWebinars()
+    /*
+     * Returns details for completed webinars.
+     */
+    function getHistoricalWebinars($parameters = null)
     {
-        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars';
+        $path = 'organizers/' . $this->getOrganizerKey() . '/historicalWebinars';
+
+        return $this->sendRequest('GET', $path, $parameters, $payload = null);
+    }
+
+
+    /*
+     * Retrieve information on a specific webinar.
+     * If the type of the webinar is 'sequence', a sequence of future times will be provided.
+     * Webinars of type 'series' are treated the same as normal webinars - each session in the webinar series has a different webinarKey.
+     * If an organizer cancels a webinar, then a request to get that webinar would return a '404 Not Found' error.
+     */
+    function getWebinar($webinarKey)
+    {
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
 
         return $this->sendRequest('GET', $path, $parameters = null, $payload = null);
     }
 
-    public function getWebinarRegistrants($webinarKey)
+
+    /*
+     * Retrieve registration details for all registrants of a specific webinar.
+     * Registrant details will not include all fields captured when creating the registrant.
+     * To see all data, use the API call 'Get Registrant'. Registrants can have one of the following states;
+     * WAITING - registrant registered and is awaiting approval (where organizer has required approval),
+     * APPROVED - registrant registered and is approved, and
+     * DENIED - registrant registered and was denied.
+     */
+    function getWebinarRegistrants($webinarKey)
     {
         $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
 
         return $this->sendRequest('GET', $path, $parameters = null, $payload = null);
     }
 
-    public function getWebinarAttendees($webinarKey)
+
+    /*
+     * Retrieve registration details for a specific registrant.
+     */
+    function getWebinarRegistrant($webinarKey, $registrantKey)
+    {
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants/' . $registrantKey;
+
+        return $this->sendRequest('GET', $path, $parameters = null, $payload = null);
+    }
+
+
+    /*
+     * Returns all attendees for all sessions of the specified webinar.
+     */
+    function getWebinarAttendees($webinarKey)
     {
         $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/attendees';
 
@@ -45,11 +103,44 @@ class Webinar extends CitrixAbstract
     }
 
 
+    /*
+     * Creates a single session webinar.
+     * The response provides a numeric webinarKey in string format for the new webinar. Once a webinar has been created with this method, you can accept registrations.
+     */
+    function createWebinar($parameters)
+    {
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars';
+
+        $webinarObject = new WebinarEntity($parameters);
+
+        return $this->sendRequest('POST', $path, $parameters = null, $payload = $webinarObject->toArray());
+    }
+
+
+    /*
+     * Cancels a specific webinar. If the webinar is a series or sequence, this call deletes all scheduled sessions.
+     * To send cancellation emails to registrants set sendCancellationEmails=true in the request.
+     * When the cancellation emails are sent, the default generated message is used in the cancellation email body.
+     */
+    function deleteWebinar($webinarKey, $sendCancellationEmails = true)
+    {
+        $parameters = [];
+
+        if ($sendCancellationEmails) {
+            $parameters = [
+                'sendCancellationEmails' => 'true',
+            ];
+        }
+//todo use fidler and check if the parameter is applied to the delete request.
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
+
+        return $this->sendRequest('DELETE', $path, $parameters, $payload = null);
+    }
 
     /*
 
         //CREATE
-        public function createWebinar($params)
+        function createWebinar($params)
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/webinars';
 
@@ -61,19 +152,9 @@ class Webinar extends CitrixAbstract
         }
 
 
-        //READ
-        public function getWebinar($webinarKey)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
-
-            $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
-
-            return $this->getResponse();
-        }
-
 
         //UPDATE
-        public function updateWebinar($webinarKey, $params, $sendNotification = true)
+        function updateWebinar($webinarKey, $params, $sendNotification = true)
         {
             $notificationString = ($sendNotification) ? 'true' : 'false';
 
@@ -88,7 +169,7 @@ class Webinar extends CitrixAbstract
 
 
         //DELETE
-        public function deleteWebinar($webinarKey, $sendNotification = true)
+        function deleteWebinar($webinarKey, $sendNotification = true)
         {
             $notificationString = ($sendNotification) ? 'true' : 'false';
 
@@ -100,32 +181,7 @@ class Webinar extends CitrixAbstract
         }
 
 
-
-
-
-
-
-        public function getHistoricalWebinars($params)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/historicalWebinars';
-
-            $this->setHttpMethod('GET')->setUrl($url)->setParams($params)->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-        public function getWebinarAttendees($webinarKey)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/attendees';
-
-            $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-        public function registerAttendee($webinarKey, $params)
+        function registerAttendee($webinarKey, $params)
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
 
@@ -137,27 +193,8 @@ class Webinar extends CitrixAbstract
         }
 
 
-        public function getWebinarRegistrants($webinarKey)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
 
-            $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-        public function getWebinarRegistrant($webinarKey, $registrantKey)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants/' . $registrantKey;
-
-            $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-        public function deleteWebinarRegistrant($webinarKey, $registrantKey)
+        function deleteWebinarRegistrant($webinarKey, $registrantKey)
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants/' . $registrantKey;
 
@@ -167,7 +204,7 @@ class Webinar extends CitrixAbstract
         }
 
 
-        public function getOrganizerSessions()
+        function getOrganizerSessions()
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/sessions';
 
@@ -177,7 +214,7 @@ class Webinar extends CitrixAbstract
         }
 
 
-        public function getWebinarSessionAttendees($webinarKey, $sessionKey)
+        function getWebinarSessionAttendees($webinarKey, $sessionKey)
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions/' . $sessionKey . '/attendees';
 
@@ -187,7 +224,7 @@ class Webinar extends CitrixAbstract
         }
 
 
-        public function getWebinarSessionAttendee($webinarKey, $sessionKey, $registrantKey)
+        function getWebinarSessionAttendee($webinarKey, $sessionKey, $registrantKey)
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions/' . $sessionKey . '/attendees/' . $registrantKey;
 

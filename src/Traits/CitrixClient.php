@@ -21,6 +21,8 @@ trait CitrixClient
 
     private $response;
 
+    private $message = '';
+
 
     //returns the body of the rest response
     function sendRequest($verb, $path, $parameters = null, $payload = null)
@@ -122,9 +124,31 @@ trait CitrixClient
         //For anything other than a success log it and throw an exception eg. 401 Unauthorized, 403, etc
         if ($response->code != 200) {
 
-            Log::error('CITRIX: ' . $response->raw_body);
+            switch ($response->code) {
 
-            throw new CitrixException($response->raw_body);
+                case 204:
+                    $this->message = 'No Content';
+                    break;
+
+                case 400:
+                    $this->message = 'Bad Request';
+                    break;
+
+                case 403:
+                    $this->message = 'Forbidden';
+                    break;
+
+                case 404:
+                    $this->message = 'Not Found';
+                    break;
+
+                default:
+                    break;
+            }
+
+            Log::error('CITRIX: ' . $this->message .' - '. $response->raw_body);
+
+            throw new CitrixException($this->message .' - '. $response->raw_body);
         }
 
         return $response->body;
@@ -133,11 +157,6 @@ trait CitrixClient
 
     private function determineHeaders()
     {
-        $this->headers = [
-            'Content-Type' => 'application/json; charset=utf-8',
-            'Accept'       => 'application/json',
-        ];
-
         //if the accessObject exist it means the API can probably authenticate by token, thus add it to the headers
         if (cache()->has('CITRIX_ACCESS_OBJECT')) {
             $this->headers['Authorization'] = $this->getAccessToken();
