@@ -66,6 +66,78 @@ class Webinar extends CitrixAbstract
 
 
     /*
+     * Creates a single session webinar.
+     * The response provides a numeric webinarKey in string format for the new webinar. Once a webinar has been created with this method, you can accept registrations.
+     */
+    function createWebinar($payloadArray)
+    {
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars';
+
+        $webinarObject = new WebinarEntity($payloadArray);
+
+        return $this->sendRequest('POST', $path, $parameters = null, $payload = $webinarObject->toArray());
+    }
+
+
+    /*
+     * Cancels a specific webinar. If the webinar is a series or sequence, this call deletes all scheduled sessions.
+     * To send cancellation emails to registrants set sendCancellationEmails=true in the request. The default value is false.
+     * When the cancellation emails are sent, the default generated message is used in the cancellation email body.
+     */
+    function deleteWebinar($webinarKey, $sendCancellationEmails = true)
+    {
+        $parameters = null;
+
+        if ($sendCancellationEmails) {
+            $parameters = [
+                'sendCancellationEmails' => true, //default value op the API is false
+            ];
+        }
+
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
+
+        return $this->sendRequest('DELETE', $path, $parameters, $payload = null);
+    }
+
+
+    /*
+     * Updates a webinar. The call requires at least one of the parameters in the request body.
+     * The request completely replaces the existing session, series, or sequence and so must include the full
+     * definition of each as for the Create call. Set notifyParticipants=true to send update emails to registrants.
+     */
+    function updateWebinar($webinarKey, $payloadArray, $sendNotification = true)
+    {
+        ($sendNotification) ? $parameters = ['notifyParticipants' => true] : $parameters = ['notifyParticipants' => false];
+
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
+
+        $webinarObject = new WebinarEntity($payloadArray);
+
+        return $this->sendRequest('PUT', $path, $parameters, $payload = $webinarObject->toArray());
+    }
+
+
+    /*
+     * Register an attendee for a scheduled webinar. The response contains the registrantKey and join URL for the registrant.
+     * An email will be sent to the registrant unless the organizer turns off the confirmation email setting from the GoToWebinar website.
+     * resendConfirmation - Indicates whether the confirmation email should be resent when a registrant is re-registered. The default value is false.
+     *
+     * Version 1 of this API call is used. Thus it explicitly excludes the header 'Accept: application/vnd.citrix.g2wapi-v1.1+json'
+     *
+     */
+    function createRegistrant($webinarKey, $payloadArray, $resendConfirmation = false)
+    {
+        ($resendConfirmation) ? $parameters = ['resendConfirmation' => true] : $parameters = ['resendConfirmation' => false];
+
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
+
+        $attendeeObject = new Attendee($payloadArray);
+
+        return $this->sendRequest('POST', $path, $parameters, $payload = $attendeeObject->toArray());
+    }
+
+
+    /*
      * Retrieve registration details for all registrants of a specific webinar.
      * Registrant details will not include all fields captured when creating the registrant.
      * To see all data, use the API call 'Get Registrant'. Registrants can have one of the following states;
@@ -73,7 +145,7 @@ class Webinar extends CitrixAbstract
      * APPROVED - registrant registered and is approved, and
      * DENIED - registrant registered and was denied.
      */
-    function getWebinarRegistrants($webinarKey)
+    function getRegistrants($webinarKey)
     {
         $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
 
@@ -84,7 +156,7 @@ class Webinar extends CitrixAbstract
     /*
      * Retrieve registration details for a specific registrant.
      */
-    function getWebinarRegistrant($webinarKey, $registrantKey)
+    function getRegistrant($webinarKey, $registrantKey)
     {
         $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants/' . $registrantKey;
 
@@ -93,117 +165,27 @@ class Webinar extends CitrixAbstract
 
 
     /*
+     * Removes a webinar registrant from current registrations for the specified webinar. The webinar must be a scheduled, future webinar.
+     */
+    function deleteRegistrant($webinarKey, $registrantKey)
+    {
+        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants/' . $registrantKey;
+
+        return $this->sendRequest('DELETE', $path, $parameters = null, $payload = null);
+    }
+
+
+    /*
      * Returns all attendees for all sessions of the specified webinar.
      */
-    function getWebinarAttendees($webinarKey)
+    function getAttendees($webinarKey)
     {
         $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/attendees';
 
         return $this->sendRequest('GET', $path, $parameters = null, $payload = null);
     }
 
-
     /*
-     * Creates a single session webinar.
-     * The response provides a numeric webinarKey in string format for the new webinar. Once a webinar has been created with this method, you can accept registrations.
-     */
-    function createWebinar($parameters)
-    {
-        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars';
-
-        $webinarObject = new WebinarEntity($parameters);
-
-        return $this->sendRequest('POST', $path, $parameters = null, $payload = $webinarObject->toArray());
-    }
-
-
-    /*
-     * Cancels a specific webinar. If the webinar is a series or sequence, this call deletes all scheduled sessions.
-     * To send cancellation emails to registrants set sendCancellationEmails=true in the request.
-     * When the cancellation emails are sent, the default generated message is used in the cancellation email body.
-     */
-    function deleteWebinar($webinarKey, $sendCancellationEmails = true)
-    {
-        $parameters = [];
-
-        if ($sendCancellationEmails) {
-            $parameters = [
-                'sendCancellationEmails' => 'true',
-            ];
-        }
-//todo use fidler and check if the parameter is applied to the delete request.
-        $path = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey;
-
-        return $this->sendRequest('DELETE', $path, $parameters, $payload = null);
-    }
-
-    /*
-
-        //CREATE
-        function createWebinar($params)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars';
-
-            $webinarObject = new WebinarEntity($params);
-
-            $this->setHttpMethod('POST')->setUrl($url)->setParams($webinarObject->toArray())->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-
-        //UPDATE
-        function updateWebinar($webinarKey, $params, $sendNotification = true)
-        {
-            $notificationString = ($sendNotification) ? 'true' : 'false';
-
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '?notifyParticipants=' . $notificationString;
-
-            $webinarObject = new WebinarEntity($params);
-            //dd($webinarObject->toArray());
-            $this->setHttpMethod('PUT')->setUrl($url)->setParams($webinarObject->toArray())->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-        //DELETE
-        function deleteWebinar($webinarKey, $sendNotification = true)
-        {
-            $notificationString = ($sendNotification) ? 'true' : 'false';
-
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '?sendCancellationEmails=' . $notificationString;
-
-            $this->setHttpMethod('DELETE')->setUrl($url)->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-        function registerAttendee($webinarKey, $params)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
-
-            $attendeeObject = new Attendee($params);
-
-            $this->setHttpMethod('POST')->setUrl($url)->setParams($attendeeObject->toArray())->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
-
-        function deleteWebinarRegistrant($webinarKey, $registrantKey)
-        {
-            $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants/' . $registrantKey;
-
-            $this->setHttpMethod('DELETE')->setUrl($url)->sendRequest();
-
-            return $this->getResponse();
-        }
-
-
         function getOrganizerSessions()
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/sessions';
@@ -213,7 +195,6 @@ class Webinar extends CitrixAbstract
             return $this->getResponse();
         }
 
-
         function getWebinarSessionAttendees($webinarKey, $sessionKey)
         {
             $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions/' . $sessionKey . '/attendees';
@@ -222,7 +203,6 @@ class Webinar extends CitrixAbstract
 
             return $this->getResponse();
         }
-
 
         function getWebinarSessionAttendee($webinarKey, $sessionKey, $registrantKey)
         {

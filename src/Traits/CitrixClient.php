@@ -121,34 +121,44 @@ trait CitrixClient
      */
     private function processResultCode($response)
     {
-        //For anything other than a success log it and throw an exception eg. 401 Unauthorized, 403, etc
-        if ($response->code != 200) {
+        switch ($response->code) {
 
-            switch ($response->code) {
+            case 202:
+                $this->message = 'Accepted';
 
-                case 204:
-                    $this->message = 'No Content';
-                    break;
+                if(is_null($response->body)){
+                    return true;
+                }
 
-                case 400:
-                    $this->message = 'Bad Request';
-                    break;
+                break;
 
-                case 403:
-                    $this->message = 'Forbidden';
-                    break;
+            case 204:
+                $this->message = 'No Content';
+                $this->throwResponseException($response);
+                break;
 
-                case 404:
-                    $this->message = 'Not Found';
-                    break;
+            case 400:
+                $this->message = 'Bad Request';
+                $this->throwResponseException($response);
+                break;
 
-                default:
-                    break;
-            }
+            case 403:
+                $this->message = 'Forbidden';
+                $this->throwResponseException($response);
+                break;
 
-            Log::error('CITRIX: ' . $this->message .' - '. $response->raw_body);
+            case 404:
+                $this->message = 'Not Found';
+                $this->throwResponseException($response);
+                break;
 
-            throw new CitrixException($this->message .' - '. $response->raw_body);
+            case 409:
+                $this->message = 'The user is already registered';
+                $this->throwResponseException($response);
+                break;
+
+            default:
+                break;
         }
 
         return $response->body;
@@ -179,6 +189,14 @@ trait CitrixClient
     function getBasePath($baseUri, $path)
     {
         return trim($baseUri, '/') . '/' . trim($path, '/');
+    }
+
+
+    private function throwResponseException($response): void
+    {
+        Log::error('CITRIX: ' . $this->message . ' - ' . $response->raw_body);
+
+        throw new CitrixException($this->message . ' - ' . $response->raw_body);
     }
 
 }

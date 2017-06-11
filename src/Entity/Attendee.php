@@ -19,8 +19,8 @@ class Attendee extends EntityAbstract
     {
         if (isset($parameterArray) && is_array($parameterArray)) {
 
-            $this->setFirstName($parameterArray[ 'firstname' ]);
-            $this->setLastName($parameterArray[ 'lastname' ]);
+            $this->setFirstName($parameterArray[ 'firstName' ]);
+            $this->setLastName($parameterArray[ 'lastName' ]);
             $this->setEmail($parameterArray[ 'email' ]);
             (isset($parameterArray[ 'organization' ]) ? $this->setOrganization($parameterArray[ 'organization' ]) : null);
 
@@ -28,15 +28,15 @@ class Attendee extends EntityAbstract
     }
 
 
-    public function setFirstName($firstname)
+    public function setFirstName($firstName)
     {
-        $this->firstName = $firstname;
+        $this->firstName = $firstName;
     }
 
 
-    public function setLastName($lastname)
+    public function setLastName($lastName)
     {
-        $this->lastName = $lastname;
+        $this->lastName = $lastName;
     }
 
 

@@ -10,7 +10,9 @@ class Webinar extends EntityAbstract
     public $description;
     public $times = [];
     public $timezone = 'Europe/Berlin';
-    public $local;
+    public $type = 'single_session';
+    public $isPasswordProtected = false;
+    public $locale = 'de_DE';
     private $webinarKey;
     private $registrationUrl;
     private $participants;
@@ -20,11 +22,13 @@ class Webinar extends EntityAbstract
     {
         if (isset($parameterArray) && is_array($parameterArray)) {
 
-            $this->setSubject((isset($parameterArray[ 'subject' ]) ? $parameterArray[ 'subject' ] : null));
-            $this->setDescription((isset($parameterArray[ 'description' ]) ? $parameterArray[ 'description' ] : ''));
-            $this->setTimes(new Time($parameterArray[ 'startTime' ], $parameterArray[ 'endTime' ]));
-            $this->setTimezone((isset($parameterArray[ 'timezone' ]) ? $parameterArray[ 'timezone' ] : $this->timezone));
-            $this->setLocal((isset($parameterArray[ 'local' ]) ? $parameterArray[ 'local' ] : 'de_DE'));
+            $this->setSubject((isset($parameterArray['subject']) ? $parameterArray['subject'] : null));
+            $this->setDescription((isset($parameterArray['description']) ? $parameterArray['description'] : ''));
+            $this->setTimes(new Time($parameterArray['startTime'], $parameterArray['endTime']));
+            $this->setTimezone((isset($parameterArray['timezone']) ? $parameterArray['timezone'] : $this->timezone));
+            $this->setType((isset($parameterArray['type']) ? $parameterArray['type'] : $this->type));
+            $this->setPasswordProtected((isset($parameterArray['isPasswordProtected']) ? $parameterArray['isPasswordProtected'] : $this->isPasswordProtected));
+            $this->setLocale((isset($parameterArray['locale']) ? $parameterArray['locale'] : $this->locale));
 
         }
     }
@@ -66,15 +70,39 @@ class Webinar extends EntityAbstract
     }
 
 
-    public function getLocal()
+    public function getLocale()
     {
-        return $this->local;
+        return $this->locale;
     }
 
 
-    public function setLocal($local)
+    public function getType()
     {
-        $this->local = $local;
+        return $this->type;
+    }
+
+
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+
+    public function getPasswordProtected()
+    {
+        return $this->isPasswordProtected;
+    }
+
+
+    public function setPasswordProtected($isPasswordProtected)
+    {
+        $this->isPasswordProtected = $isPasswordProtected;
+    }
+
+
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
     }
 
 
