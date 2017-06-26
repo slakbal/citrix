@@ -35,6 +35,16 @@
       "Slakbal\\Citrix\\Test\\": "tests"
     }
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Slakbal\\Citrix\\CitrixServiceProvider"
+      ],
+      "aliases": {
+        "Flash": "Slakbal\\Citrix\\Facade\\GotoWebinar"
+      }
+    }
+  },
   "license": "MIT",
-  "minimum-stability": "dev"
+  "minimum-stability": "stable"
 }
