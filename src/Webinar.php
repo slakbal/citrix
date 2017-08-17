@@ -107,13 +107,11 @@ class Webinar extends CitrixAbstract implements WebinarInterface
     }
 
 
-    public function registerAttendee($webinarKey, $params)
+    public function registerAttendee($webinarKey, $params = [])
     {
         $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/registrants';
 
-        $attendeeObject = collect($params);
-
-        $this->setHttpMethod('POST')->setUrl($url)->setParams($attendeeObject->toArray())->sendRequest();
+        $this->setHttpMethod('POST')->setUrl($url)->setParams($params)->sendRequest();
 
         return $this->getResponse();
     }
