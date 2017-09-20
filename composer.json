@@ -40,7 +40,7 @@
         "Slakbal\\Citrix\\CitrixServiceProvider"
       ],
       "aliases": {
-        "Flash": "Slakbal\\Citrix\\Facade\\GotoWebinar"
+        "GotoWebinar": "Slakbal\\Citrix\\Facade\\GotoWebinar"
       }
     }
   },
