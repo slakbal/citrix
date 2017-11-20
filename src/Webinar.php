@@ -156,6 +156,14 @@ class Webinar extends CitrixAbstract implements WebinarInterface
         return $this->getResponse();
     }
 
+    public function getWebinarSessions($webinarKey)
+    {
+        $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions';
+
+        $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
+
+        return $this->getResponse();
+    }
 
     public function getWebinarSessionAttendees($webinarKey, $sessionKey)
     {
@@ -170,6 +178,24 @@ class Webinar extends CitrixAbstract implements WebinarInterface
     public function getWebinarSessionAttendee($webinarKey, $sessionKey, $registrantKey)
     {
         $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions/' . $sessionKey . '/attendees/' . $registrantKey;
+
+        $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
+
+        return $this->getResponse();
+    }
+
+    public function getWebinarSessionPolls($webinarKey, $sessionKey)
+    {
+        $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions/' . $sessionKey . '/polls';
+
+        $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
+
+        return $this->getResponse();
+    }
+    
+    public function getAttendeePollAnswers($webinarKey, $sessionKey, $registrantKey)
+    {
+        $url = 'organizers/' . $this->getOrganizerKey() . '/webinars/' . $webinarKey . '/sessions/' . $sessionKey . '/attendees/' . $registrantKey . '/polls';
 
         $this->setHttpMethod('GET')->setUrl($url)->sendRequest();
 
