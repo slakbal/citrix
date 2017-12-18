@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 abstract class CitrixAbstract
 {
 
-    private $base_uri = 'https://api.citrixonline.com:443/G2W/rest/';
+    private $base_uri = 'https://api.getgo.com/G2W/rest/';
 
     private $port = 443;
 

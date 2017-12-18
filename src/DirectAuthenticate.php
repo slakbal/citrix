@@ -7,7 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 class DirectAuthenticate
 {
 
-    protected $base_uri = 'https://api.citrixonline.com';//'https://api.citrixonline.com/G2W/rest';//'https://api.citrixonline.com/oauth/access_token';//
+    protected $base_uri = 'https://api.getgo.com/G2W/rest/';//'https://api.citrixonline.com';//'https://api.citrixonline.com/G2W/rest';//'https://api.citrixonline.com/oauth/access_token';//
 
     protected $timeout = 5.0;
 
